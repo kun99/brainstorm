@@ -1,6 +1,5 @@
 import json
-
-
+import random
 
 def brainstorm():
     try:
@@ -11,7 +10,8 @@ def brainstorm():
         words = [None] * lines
         for i, word in enumerate(dictionary):
             words[i] = word
-        print(words[0])
+        random_index = random.randint(0, lines-1)
+        print(words[random_index])
     except Exception as e:
         print("Couldn't open dictionary json file.")
     
