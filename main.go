@@ -3,10 +3,23 @@ package main
 import (
 	"encoding/json"
 	"net/http"
+	"os/exec"
+	"fmt"
 )
 
 type ResponseData struct {
 	Word string `json:"word"`
+}
+
+func brainstorm() string {
+	cmd := exec.Command("python", "brainstorm.py")
+
+	output, err := cmd.Output()
+	if err != nil {
+		fmt.Println("Error:", err)
+		return ""
+	}
+	return string(output)
 }
 
 func main() {
@@ -18,7 +31,7 @@ func main() {
 			return
 		}
 
-		randomWord := "will be the random word"
+		randomWord := brainstorm()		
 		responseData := ResponseData{
 			Word: randomWord,
 		}
@@ -30,9 +43,9 @@ func main() {
 			return
 		}
 
-		// writing json to the http response writer
 		w.Header().Set("Content-Type", "application/json")
 
+		// writing json to the http response writer
 		_, err = w.Write(jsonResponse)
 		if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
