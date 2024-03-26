@@ -2,9 +2,10 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os/exec"
-	"fmt"
+	"github.com/rs/cors"
 )
 
 type ResponseData struct {
@@ -31,7 +32,7 @@ func main() {
 			return
 		}
 
-		randomWord := brainstorm()		
+		randomWord := brainstorm()
 		responseData := ResponseData{
 			Word: randomWord,
 		}
@@ -53,5 +54,9 @@ func main() {
 		}
 	})
 
-	http.ListenAndServe(":8080", nil)
+	c := cors.Default()
+
+	handler := c.Handler(http.DefaultServeMux)
+
+	http.ListenAndServe(":8080", handler)
 }
