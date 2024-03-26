@@ -12,8 +12,8 @@ def brainstorm():
             words[i] = word
         random_index = random.randint(0, lines-1)
         print(words[random_index])
+        
     except Exception as e:
         print("Couldn't open dictionary json file.")
-    
     
 brainstorm()
