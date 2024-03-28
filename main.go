@@ -71,7 +71,7 @@ func getDefinition(randomWord string) string {
 		definition := word[0].Meanings[0].Definitions[0].Definition
 		return definition
 	} else {
-		return ""
+		return "---"
 	}
 }
 

@@ -17,11 +17,11 @@ So went with Go instead.
 ## Todo
 [x] Click button for word
 
-[ ] Scrape for word definition
+[x] Word definition
 
-[ ] Memo feature
+[ ] Memo
 
-[ ] DB to store memos
+[ ] Memo persistence
 
 ---
 
