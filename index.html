@@ -11,25 +11,30 @@
       <h1 class="text-3xl">Brainstorm</h1>
     </header>
     <main class="flex flex-col items-center mt-10">
-      <div class="h-10">
-        <div id="output"></div>
-      </div>
       <div>
-        <button id="getWord" class="p-2 border border-solid rounded-lg bg-slate-100 hover:bg-slate-200">Get Word</button>
+        <button
+          id="getWord"
+          class="p-2 border border-solid rounded-lg bg-slate-100 hover:bg-slate-200"
+        >
+          Get Word
+        </button>
+      </div>
+      <div class="flex flex-col mt-2">
+        <div id="word"></div>
+        <div id="definition"></div>
       </div>
     </main>
     <script>
-      document
-        .getElementById("getWord")
-        .addEventListener("click", async () => {
-          try {
-            const response = await fetch("http://localhost:8080/word");
-            const data = await response.json();
-            document.getElementById("output").innerText = data.word;
-          } catch (error) {
-            console.error("Error:", error);
-          }
-        });
+      document.getElementById("getWord").addEventListener("click", async () => {
+        try {
+          const response = await fetch("http://localhost:8080/word");
+          const data = await response.json();
+          document.getElementById("word").innerText = data.word;
+          document.getElementById("definition").innerText = data.definition;
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      });
     </script>
   </body>
 </html>

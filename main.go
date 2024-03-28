@@ -3,13 +3,47 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"os/exec"
+	"strings"
+
 	"github.com/rs/cors"
 )
 
 type ResponseData struct {
-	Word string `json:"word"`
+	Word       string `json:"word"`
+	Definition string `json:"definition"`
+}
+
+type Word []struct {
+	Word      string `json:"word"`
+	Phonetic  string `json:"phonetic"`
+	Phonetics []struct {
+		Text      string `json:"text"`
+		Audio     string `json:"audio"`
+		SourceURL string `json:"sourceUrl,omitempty"`
+		License   struct {
+			Name string `json:"name"`
+			URL  string `json:"url"`
+		} `json:"license,omitempty"`
+	} `json:"phonetics"`
+	Meanings []struct {
+		PartOfSpeech string `json:"partOfSpeech"`
+		Definitions  []struct {
+			Definition string        `json:"definition"`
+			Synonyms   []interface{} `json:"synonyms"`
+			Antonyms   []interface{} `json:"antonyms"`
+			Example    string        `json:"example,omitempty"`
+		} `json:"definitions"`
+		Synonyms []interface{} `json:"synonyms"`
+		Antonyms []interface{} `json:"antonyms"`
+	} `json:"meanings"`
+	License struct {
+		Name string `json:"name"`
+		URL  string `json:"url"`
+	} `json:"license"`
+	SourceUrls []string `json:"sourceUrls"`
 }
 
 func brainstorm() string {
@@ -23,6 +57,24 @@ func brainstorm() string {
 	return string(output)
 }
 
+func getDefinition(randomWord string) string {
+	url := "https://api.dictionaryapi.dev/api/v2/entries/en/" + randomWord
+	resp, err := http.Get(strings.TrimSpace(url))
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer resp.Body.Close()
+
+	var word Word
+	json.NewDecoder(resp.Body).Decode(&word)
+	if len(word) > 0 {
+		definition := word[0].Meanings[0].Definitions[0].Definition
+		return definition
+	} else {
+		return ""
+	}
+}
+
 func main() {
 	//comments are for me learning purposes
 	http.HandleFunc("/word", func(w http.ResponseWriter, r *http.Request) {
@@ -33,8 +85,10 @@ func main() {
 		}
 
 		randomWord := brainstorm()
+		definition := getDefinition(randomWord)
 		responseData := ResponseData{
-			Word: randomWord,
+			Word:       randomWord,
+			Definition: definition,
 		}
 
 		// attempting to turn our custom struct into json
